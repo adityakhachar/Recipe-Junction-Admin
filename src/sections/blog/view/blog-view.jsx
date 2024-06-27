@@ -18,15 +18,16 @@ export default function BlogView() {
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Blog</Typography>
+        <Typography variant="h4">Recipes</Typography>
 
         <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
-          New Post
+          Add New Recipe
         </Button>
       </Stack>
 
       <Stack mb={5} direction="row" alignItems="center" justifyContent="space-between">
         <PostSearch posts={posts} />
+        <Stack direction="row" alignItems="center" spacing={2}>
         <PostSort
           options={[
             { value: 'latest', label: 'Latest' },
@@ -34,8 +35,25 @@ export default function BlogView() {
             { value: 'oldest', label: 'Oldest' },
           ]}
         />
-      </Stack>
+        <PostSort
+          options={[
+            { value: 'latest', label: 'Latest' },
+            { value: 'popular', label: 'Popular' },
+            { value: 'oldest', label: 'Oldest' },
+          ]}
+        />
+        <PostSort
+          options={[
+            { value: 'latest', label: 'Latest' },
+            { value: 'popular', label: 'Popular' },
+            { value: 'oldest', label: 'Oldest' },
+          ]}
+        />
 
+        </Stack>
+        
+      </Stack>
+      
       <Grid container spacing={3}>
         {posts.map((post, index) => (
           <PostCard key={post.id} post={post} index={index} />

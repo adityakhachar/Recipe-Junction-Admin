@@ -3,40 +3,27 @@ import SvgColor from 'src/components/svg-color';
 // ----------------------------------------------------------------------
 
 const icon = (name) => (
-  <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />
+  <SvgColor src={`${name}`} sx={{ width: 1, height: 1 }} />
 );
 
 const navConfig = [
   {
     title: 'dashboard',
-    path: '/',
-    icon: icon('ic_analytics'),
+    path: '/dashboard',
+    icon: icon('/assets/icons/navbar/ic_analytics.svg'),
   },
   {
     title: 'user',
     path: '/user',
-    icon: icon('ic_user'),
+    icon: icon('https://img.icons8.com/?size=100&id=4kuCnjaqo47m&format=png&color=000000'),
   },
   {
-    title: 'product',
-    path: '/products',
-    icon: icon('ic_cart'),
-  },
-  {
-    title: 'blog',
+    title: 'Recipes',
     path: '/blog',
-    icon: icon('ic_blog'),
+    icon: icon('https://img.icons8.com/?size=100&id=57498&format=png&color=000000'),
   },
-  {
-    title: 'login',
-    path: '/login',
-    icon: icon('ic_lock'),
-  },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: icon('ic_disabled'),
-  },
+  
+  
 ];
 
 export default navConfig;

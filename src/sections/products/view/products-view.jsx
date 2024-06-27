@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Step from '@mui/material/Step';
@@ -9,11 +9,16 @@ import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-
-const steps = ['Personal Details', 'Contact Information', 'Address'];
+const steps = [
+  'Recipe Details',
+  'Category Information',
+  'Add Nutrition Level',
+  'Add Instructions',
+  'Add Ingredients',
+];
 
 export default function ProductsView() {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(1); // Start activeStep from 1
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -26,8 +31,14 @@ export default function ProductsView() {
     zipCode: '',
   });
 
+  useEffect(() => {
+    console.log(activeStep);
+  }, [activeStep]);
+
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if (activeStep < steps.length) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
   };
 
   const handleBack = () => {
@@ -43,7 +54,7 @@ export default function ProductsView() {
   };
 
   const handleReset = () => {
-    setActiveStep(0);
+    setActiveStep(1); // Reset activeStep to 1
     setFormData({
       firstName: '',
       lastName: '',
@@ -61,14 +72,30 @@ export default function ProductsView() {
     // Handle form submission logic here
     console.log('Form Submitted:', formData);
     // Optionally, add redirection logic or API calls for form submission
+
+    // Reset form data
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneNumber: '',
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      state: '',
+      zipCode: '',
+    });
+
+    // Reset active step to 1
+    setActiveStep(1);
   };
 
   const getStepContent = (step) => {
     switch (step) {
-      case 0:
+      case 1:
         return (
           <>
-            <Typography variant="h6">Step 1: Personal Details</Typography>
+            <Typography variant="h6">Step 1: Recipe Details</Typography>
             <TextField
               name="firstName"
               label="First Name"
@@ -87,10 +114,10 @@ export default function ProductsView() {
             />
           </>
         );
-      case 1:
+      case 2:
         return (
           <>
-            <Typography variant="h6">Step 2: Contact Information</Typography>
+            <Typography variant="h6">Step 2: Category Information</Typography>
             <TextField
               name="email"
               label="Email"
@@ -109,10 +136,10 @@ export default function ProductsView() {
             />
           </>
         );
-      case 2:
+      case 3:
         return (
           <>
-            <Typography variant="h6">Step 3: Address</Typography>
+            <Typography variant="h6">Step 3: Add Nutrition Level</Typography>
             <TextField
               name="addressLine1"
               label="Address Line 1"
@@ -155,6 +182,28 @@ export default function ProductsView() {
             />
           </>
         );
+      case 4:
+        return (
+          <>
+            <Typography variant="h6">Step 4: Add Instructions</Typography>
+            {/* Add fields for instructions */}
+          </>
+        );
+      case 5:
+        return (
+          <>
+            <Typography variant="h6">Step 5: Add Ingredients</Typography>
+            {/* Add fields for ingredients */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+              <Button onClick={handleReset} variant="outlined">
+                Reset
+              </Button>
+              <Button type="submit" variant="contained" color="primary">
+                Finish
+              </Button>
+            </Box>
+          </>
+        );
       default:
         return 'Unknown step';
     }
@@ -163,10 +212,10 @@ export default function ProductsView() {
   return (
     <Container>
       <Typography variant="h4" sx={{ mb: 5 }}>
-        Step Form
+        Add Recipe
       </Typography>
 
-      <Stepper activeStep={activeStep} sx={{ mb: 3 }}>
+      <Stepper activeStep={activeStep - 1} sx={{ mb: 3 }}>
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
@@ -178,9 +227,9 @@ export default function ProductsView() {
         <form onSubmit={handleSubmit}>
           <Box>{getStepContent(activeStep)}</Box>
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
             <Button
-              disabled={activeStep === 0}
+              disabled={activeStep === 1}
               onClick={handleBack}
               sx={{ mr: 2 }}
               variant="outlined"
@@ -189,9 +238,9 @@ export default function ProductsView() {
               Back
             </Button>
 
-            {activeStep === steps.length - 1 ? (
+            {activeStep === steps.length + 1 ? (
               <Button type="submit" variant="contained" color="primary">
-                Submit
+                Finish
               </Button>
             ) : (
               <Button onClick={handleNext} variant="contained" color="primary">
@@ -201,12 +250,6 @@ export default function ProductsView() {
           </Box>
         </form>
       </Box>
-
-      {activeStep === steps.length && (
-        <Box sx={{ mt: 3 }}>
-          <Button onClick={handleReset}>Reset</Button>
-        </Box>
-      )}
     </Container>
   );
 }

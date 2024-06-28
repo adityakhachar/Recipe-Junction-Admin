@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Step from '@mui/material/Step';
@@ -9,11 +9,16 @@ import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-
-const steps = ['Personal Details', 'Contact Information', 'Address'];
+const steps = [
+  'Recipe Details',
+  'Category Information',
+  'Add Nutrition Level',
+  'Add Instructions',
+  'Add Ingredients'
+];
 
 export default function ProductsView() {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(0); // Start activeStep from 0
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -25,6 +30,10 @@ export default function ProductsView() {
     state: '',
     zipCode: '',
   });
+
+  useEffect(() => {
+    console.log(activeStep);
+  }, [activeStep]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -43,7 +52,7 @@ export default function ProductsView() {
   };
 
   const handleReset = () => {
-    setActiveStep(0);
+    setActiveStep(0); // Reset activeStep to 0
     setFormData({
       firstName: '',
       lastName: '',
@@ -57,10 +66,27 @@ export default function ProductsView() {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     // Handle form submission logic here
     console.log('Form Submitted:', formData);
     // Optionally, add redirection logic or API calls for form submission
+
+    // Reset form data
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneNumber: '',
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      state: '',
+      zipCode: '',
+    });
+
+    // Reset active step to 0
+    setActiveStep(0);
   };
 
   const getStepContent = (step) => {
@@ -68,7 +94,7 @@ export default function ProductsView() {
       case 0:
         return (
           <>
-            <Typography variant="h6">Step 1: Personal Details</Typography>
+            <Typography variant="h6">Step 1: Recipe Details</Typography>
             <TextField
               name="firstName"
               label="First Name"
@@ -85,12 +111,20 @@ export default function ProductsView() {
               fullWidth
               margin="normal"
             />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+              <Button disabled={activeStep === 0} onClick={handleBack} variant="outlined" color="inherit">
+                Back
+              </Button>
+              <Button onClick={handleNext} variant="contained" color="primary" type="button">
+                Next
+              </Button>
+            </Box>
           </>
         );
       case 1:
         return (
           <>
-            <Typography variant="h6">Step 2: Contact Information</Typography>
+            <Typography variant="h6">Step 2: Category Information</Typography>
             <TextField
               name="email"
               label="Email"
@@ -107,12 +141,20 @@ export default function ProductsView() {
               fullWidth
               margin="normal"
             />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+              <Button disabled={activeStep === 0} onClick={handleBack} variant="outlined" color="inherit">
+                Back
+              </Button>
+              <Button onClick={handleNext} variant="contained" color="primary" type="button">
+                Next
+              </Button>
+            </Box>
           </>
         );
       case 2:
         return (
           <>
-            <Typography variant="h6">Step 3: Address</Typography>
+            <Typography variant="h6">Step 3: Add Nutrition Level</Typography>
             <TextField
               name="addressLine1"
               label="Address Line 1"
@@ -153,8 +195,50 @@ export default function ProductsView() {
               fullWidth
               margin="normal"
             />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+              <Button disabled={activeStep === 0} onClick={handleBack} variant="outlined" color="inherit">
+                Back
+              </Button>
+              <Button onClick={handleNext} variant="contained" color="primary" type="button">
+                Next
+              </Button>
+            </Box>
           </>
         );
+      case 3:
+        return (
+          <>
+            <Typography variant="h6">Step 4: Add Instructions</Typography>
+            {/* Add fields for instructions */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+              <Button disabled={activeStep === 0} onClick={handleBack} variant="outlined" color="inherit">
+                Back
+              </Button>
+              <Button onClick={handleNext} variant="contained" color="primary" type="button">
+                Next
+              </Button>
+            </Box>
+          </>
+        );
+      case 4:
+        return (
+          <>
+            <Typography variant="h6">Step 5: Add Ingredients</Typography>
+            {/* Add fields for ingredients */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+              <Button disabled={activeStep === 0} onClick={handleBack} variant="outlined" color="inherit">
+                Back
+              </Button>
+              <Button onClick={handleReset} variant="outlined" color="secondary">
+                   Reset
+                 </Button>
+              <Button onClick={handleSubmit} variant="contained" color="primary" type="button">
+                Finish
+              </Button>
+            </Box>
+          </>
+        );
+        
       default:
         return 'Unknown step';
     }
@@ -163,7 +247,7 @@ export default function ProductsView() {
   return (
     <Container>
       <Typography variant="h4" sx={{ mb: 5 }}>
-        Step Form
+        Add Recipe
       </Typography>
 
       <Stepper activeStep={activeStep} sx={{ mb: 3 }}>
@@ -177,36 +261,8 @@ export default function ProductsView() {
       <Box sx={{ mb: 2 }}>
         <form onSubmit={handleSubmit}>
           <Box>{getStepContent(activeStep)}</Box>
-
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 2 }}
-              variant="outlined"
-              color="inherit"
-            >
-              Back
-            </Button>
-
-            {activeStep === steps.length - 1 ? (
-              <Button type="submit" variant="contained" color="primary">
-                Submit
-              </Button>
-            ) : (
-              <Button onClick={handleNext} variant="contained" color="primary">
-                Next
-              </Button>
-            )}
-          </Box>
         </form>
       </Box>
-
-      {activeStep === steps.length && (
-        <Box sx={{ mt: 3 }}>
-          <Button onClick={handleReset}>Reset</Button>
-        </Box>
-      )}
     </Container>
   );
 }

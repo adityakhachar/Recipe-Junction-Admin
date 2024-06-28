@@ -14,11 +14,11 @@ const steps = [
   'Category Information',
   'Add Nutrition Level',
   'Add Instructions',
-  'Add Ingredients',
+  'Add Ingredients'
 ];
 
 export default function ProductsView() {
-  const [activeStep, setActiveStep] = useState(1); // Start activeStep from 1
+  const [activeStep, setActiveStep] = useState(0); // Start activeStep from 0
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -36,9 +36,7 @@ export default function ProductsView() {
   }, [activeStep]);
 
   const handleNext = () => {
-    if (activeStep < steps.length) {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    }
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
@@ -54,7 +52,7 @@ export default function ProductsView() {
   };
 
   const handleReset = () => {
-    setActiveStep(1); // Reset activeStep to 1
+    setActiveStep(0); // Reset activeStep to 0
     setFormData({
       firstName: '',
       lastName: '',
@@ -68,7 +66,8 @@ export default function ProductsView() {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     // Handle form submission logic here
     console.log('Form Submitted:', formData);
     // Optionally, add redirection logic or API calls for form submission
@@ -86,13 +85,13 @@ export default function ProductsView() {
       zipCode: '',
     });
 
-    // Reset active step to 1
-    setActiveStep(1);
+    // Reset active step to 0
+    setActiveStep(0);
   };
 
   const getStepContent = (step) => {
     switch (step) {
-      case 1:
+      case 0:
         return (
           <>
             <Typography variant="h6">Step 1: Recipe Details</Typography>
@@ -112,9 +111,17 @@ export default function ProductsView() {
               fullWidth
               margin="normal"
             />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+              <Button disabled={activeStep === 0} onClick={handleBack} variant="outlined" color="inherit">
+                Back
+              </Button>
+              <Button onClick={handleNext} variant="contained" color="primary" type="button">
+                Next
+              </Button>
+            </Box>
           </>
         );
-      case 2:
+      case 1:
         return (
           <>
             <Typography variant="h6">Step 2: Category Information</Typography>
@@ -134,9 +141,17 @@ export default function ProductsView() {
               fullWidth
               margin="normal"
             />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+              <Button disabled={activeStep === 0} onClick={handleBack} variant="outlined" color="inherit">
+                Back
+              </Button>
+              <Button onClick={handleNext} variant="contained" color="primary" type="button">
+                Next
+              </Button>
+            </Box>
           </>
         );
-      case 3:
+      case 2:
         return (
           <>
             <Typography variant="h6">Step 3: Add Nutrition Level</Typography>
@@ -180,30 +195,50 @@ export default function ProductsView() {
               fullWidth
               margin="normal"
             />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+              <Button disabled={activeStep === 0} onClick={handleBack} variant="outlined" color="inherit">
+                Back
+              </Button>
+              <Button onClick={handleNext} variant="contained" color="primary" type="button">
+                Next
+              </Button>
+            </Box>
+          </>
+        );
+      case 3:
+        return (
+          <>
+            <Typography variant="h6">Step 4: Add Instructions</Typography>
+            {/* Add fields for instructions */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+              <Button disabled={activeStep === 0} onClick={handleBack} variant="outlined" color="inherit">
+                Back
+              </Button>
+              <Button onClick={handleNext} variant="contained" color="primary" type="button">
+                Next
+              </Button>
+            </Box>
           </>
         );
       case 4:
         return (
           <>
-            <Typography variant="h6">Step 4: Add Instructions</Typography>
-            {/* Add fields for instructions */}
-          </>
-        );
-      case 5:
-        return (
-          <>
             <Typography variant="h6">Step 5: Add Ingredients</Typography>
             {/* Add fields for ingredients */}
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-              <Button onClick={handleReset} variant="outlined">
-                Reset
+              <Button disabled={activeStep === 0} onClick={handleBack} variant="outlined" color="inherit">
+                Back
               </Button>
-              <Button type="submit" variant="contained" color="primary">
+              <Button onClick={handleReset} variant="outlined" color="secondary">
+                   Reset
+                 </Button>
+              <Button onClick={handleSubmit} variant="contained" color="primary" type="button">
                 Finish
               </Button>
             </Box>
           </>
         );
+        
       default:
         return 'Unknown step';
     }
@@ -215,7 +250,7 @@ export default function ProductsView() {
         Add Recipe
       </Typography>
 
-      <Stepper activeStep={activeStep - 1} sx={{ mb: 3 }}>
+      <Stepper activeStep={activeStep} sx={{ mb: 3 }}>
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
@@ -226,28 +261,6 @@ export default function ProductsView() {
       <Box sx={{ mb: 2 }}>
         <form onSubmit={handleSubmit}>
           <Box>{getStepContent(activeStep)}</Box>
-
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-            <Button
-              disabled={activeStep === 1}
-              onClick={handleBack}
-              sx={{ mr: 2 }}
-              variant="outlined"
-              color="inherit"
-            >
-              Back
-            </Button>
-
-            {activeStep === steps.length + 1 ? (
-              <Button type="submit" variant="contained" color="primary">
-                Finish
-              </Button>
-            ) : (
-              <Button onClick={handleNext} variant="contained" color="primary">
-                Next
-              </Button>
-            )}
-          </Box>
         </form>
       </Box>
     </Container>

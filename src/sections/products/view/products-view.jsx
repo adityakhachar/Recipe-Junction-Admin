@@ -14,21 +14,18 @@ const steps = [
   'Category Information',
   'Add Nutrition Level',
   'Add Instructions',
-  'Add Ingredients'
+  'Add Ingredients',
 ];
 
 export default function ProductsView() {
   const [activeStep, setActiveStep] = useState(0); // Start activeStep from 0
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneNumber: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    zipCode: '',
+    name: '',
+    description: '',
+    cook_time: '',
+    prep_time: '',
+    serving_persons: '',
+    difficulty: '',
   });
 
   useEffect(() => {
@@ -63,6 +60,12 @@ export default function ProductsView() {
       city: '',
       state: '',
       zipCode: '',
+      name: '',
+      description: '',
+      cook_time: '',
+      prep_time: '',
+      serving_persons: '',
+      difficulty: '',
     });
   };
 
@@ -83,6 +86,12 @@ export default function ProductsView() {
       city: '',
       state: '',
       zipCode: '',
+      name: '',
+      description: '',
+      cook_time: '',
+      prep_time: '',
+      serving_persons: '',
+      difficulty: '',
     });
 
     // Reset active step to 0
@@ -96,21 +105,74 @@ export default function ProductsView() {
           <>
             <Typography variant="h6">Step 1: Recipe Details</Typography>
             <TextField
-              name="firstName"
-              label="First Name"
-              value={formData.firstName}
+              name="name"
+              label="Recipe Name"
+              value={formData.name}
               onChange={handleChange}
               fullWidth
               margin="normal"
+              required
             />
             <TextField
-              name="lastName"
-              label="Last Name"
-              value={formData.lastName}
+              name="description"
+              label="Description"
+              value={formData.description}
               onChange={handleChange}
               fullWidth
               margin="normal"
+              multiline
+              minRows={4}
+              required
+              helperText="Minimum 200 characters"
             />
+            <TextField
+              name="cook_time"
+              label="Cook Time (minutes)"
+              type="number"
+              value={formData.cook_time}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+            />
+            <TextField
+              name="prep_time"
+              label="Prep Time (minutes)"
+              type="number"
+              value={formData.prep_time}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+            />
+            <TextField
+              name="serving_persons"
+              label="Serving Persons"
+              type="number"
+              value={formData.serving_persons}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+            />
+            <TextField
+              name="difficulty"
+              label="Difficulty"
+              select
+              value={formData.difficulty}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+              SelectProps={{
+                native: true,
+              }}
+            >
+              <option value="" />
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </TextField>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
               <Button disabled={activeStep === 0} onClick={handleBack} variant="outlined" color="inherit">
                 Back
@@ -121,6 +183,7 @@ export default function ProductsView() {
             </Box>
           </>
         );
+
       case 1:
         return (
           <>

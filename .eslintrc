@@ -42,6 +42,7 @@
     }
   },
   "rules": {
+    "perfectionist/sort-named-imports": "off", // Make sure this rule is set to "off"
     "no-alert": 0,
     "camelcase": 0,
     "no-console": 0,
@@ -108,13 +109,6 @@
     ],
     // perfectionist
     // https://eslint-plugin-perfectionist.azat.io/
-    "perfectionist/sort-named-imports": [
-      1,
-      {
-        "order": "asc",
-        "type": "line-length"
-      }
-    ],
     "perfectionist/sort-named-exports": [
       1,
       {

@@ -89,7 +89,7 @@ export default function ProductsView() {
     const { name, value } = e.target;
   
     // Handle custom options logic
-    let updatedValue = value; // Create a new variable to hold the updated value
+    let updatedValue = value;
   
     if (name === 'cuisine_type' && value.includes('Custom') && customCuisine) {
       updatedValue = value.filter((option) => option !== 'Custom');
@@ -103,11 +103,23 @@ export default function ProductsView() {
       updatedValue = value.filter((option) => option !== 'Custom');
     }
   
+    if (name.startsWith('nutritionLevels')) {
+      const [, index, subFieldName] = name.match(/\[(\d+)\]\.(\w+)/);
+      setFormData((prevData) => ({
+        ...prevData,
+        nutritionLevels: prevData.nutritionLevels.map((item, i) =>
+          i === parseInt(index, 10) ? { ...item, [subFieldName]: value } : item
+        ),
+      }));
+      return;
+    }
+  
     setFormData((prevData) => ({
       ...prevData,
-      [name]: updatedValue, // Update state with the new variable
+      [name]: updatedValue,
     }));
   };
+  
   
 
   const handleCustomCuisineChange = (e) => {
@@ -185,13 +197,14 @@ export default function ProductsView() {
       instructionNotes: '',
     }));
   };
-
+  
   const handleDeleteInstruction = (index) => {
     setFormData((prevData) => ({
       ...prevData,
       instructions: prevData.instructions.filter((_, i) => i !== index),
     }));
   };
+  
 
   
   
@@ -493,34 +506,28 @@ export default function ProductsView() {
         return (
           <>
             <Typography variant="h6">Step 3: Add Nutrition Level</Typography>
-            {formData.cuisine_type.length > 0 && (
-              <Typography variant="body1">
-                Selected Cuisine Types: {formData.cuisine_type.join(', ')}
-              </Typography>
-            )}
-
-            {/* Mapping over nutrition levels in formData to display existing entries */}
+            {/* {/ Mapping over nutrition levels in formData to display existing entries /} */}
             {formData.nutritionLevels.map((item, index) => (
               <div key={index}>
                 <TextField
-                  name={`nutritionLevels[${index}].serving_item_name`}
-                  label="Serving Item Name"
-                  value={item.serving_item_name}
-                  onChange={(e) => handleChange(e, index, 'nutritionLevels')}
-                  fullWidth
-                  margin="normal"
-                  required
-                />
-                <TextField
-                  name={`nutritionLevels[${index}].amount_gm`}
-                  label="Amount (gm)"
-                  type="number"
-                  value={item.amount_gm}
-                  onChange={(e) => handleChange(e, index, 'nutritionLevels')}
-                  fullWidth
-                  margin="normal"
-                  required
-                />
+  name={`nutritionLevels[${index}].serving_item_name`}
+  label="Serving Item Name"
+  value={item.serving_item_name}
+  onChange={handleChange}
+  fullWidth
+  margin="normal"
+  required
+/>
+<TextField
+  name={`nutritionLevels[${index}].amount_gm`}
+  label="Amount (gm)"
+  type="number"
+  value={item.amount_gm}
+  onChange={handleChange}
+  fullWidth
+  margin="normal"
+  required
+/>
                 {index === formData.nutritionLevels.length - 1 && (
                   <Button
                     onClick={() => handleAddMore('nutritionLevels')}
@@ -558,9 +565,9 @@ export default function ProductsView() {
         return (
           <>
             <Typography variant="h6">Step 4: Add Instructions</Typography>
-            {/* Instructions list */}
+            {/* {/ Instructions list /}
             
-            {/* Add new instruction */}
+            {/ Add new instruction /} */}
             <TextField
               name="instructionText"
               label="Instruction Text"

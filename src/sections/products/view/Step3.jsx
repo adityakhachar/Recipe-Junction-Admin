@@ -1,17 +1,40 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-const Step3 = ({ formData, onChange, onNext, onBack, handleAddMore }) => {
+const Step3 = ({ onNext, onBack }) => {
+  const [formData, setFormData] = useState({
+    nutritionLevels: [{ serving_item_name: '', amount_gm: '' }],
+    calories: '',
+  });
+
   const handleChange = (e, index, type) => {
     const { name, value } = e.target;
     const updatedData = [...formData[type]];
     updatedData[index] = { ...updatedData[index], [name]: value };
-    onChange({ [type]: updatedData });
+    setFormData({ ...formData, [type]: updatedData });
+  };
+
+  const handleAddMore = (type) => {
+    setFormData({
+      ...formData,
+      [type]: [...formData[type], { serving_item_name: '', amount_gm: '' }],
+    });
+  };
+
+  const logFormData = () => {
+    // Prepare data in the format expected by the nutritionSchema
+    const nutritionData = {
+      serving: formData.nutritionLevels,
+      calories: parseInt(formData.calories, 10),
+    };
+
+    // Log the data in the desired schema format
+    console.log('Form Data for Nutrition:', nutritionData);
   };
 
   return (
@@ -20,7 +43,7 @@ const Step3 = ({ formData, onChange, onNext, onBack, handleAddMore }) => {
       {formData.nutritionLevels.map((item, index) => (
         <div key={index}>
           <TextField
-            name={`nutritionLevels[${index}].serving_item_name`}
+            name="serving_item_name"
             label="Serving Item Name"
             value={item.serving_item_name}
             onChange={(e) => handleChange(e, index, 'nutritionLevels')}
@@ -29,7 +52,7 @@ const Step3 = ({ formData, onChange, onNext, onBack, handleAddMore }) => {
             required
           />
           <TextField
-            name={`nutritionLevels[${index}].amount_gm`}
+            name="amount_gm"
             label="Amount (gm)"
             type="number"
             value={item.amount_gm}
@@ -54,7 +77,7 @@ const Step3 = ({ formData, onChange, onNext, onBack, handleAddMore }) => {
         label="Calories"
         type="number"
         value={formData.calories}
-        onChange={(e) => onChange({ calories: e.target.value })}
+        onChange={(e) => setFormData({ ...formData, calories: e.target.value })}
         fullWidth
         margin="normal"
         required
@@ -64,7 +87,14 @@ const Step3 = ({ formData, onChange, onNext, onBack, handleAddMore }) => {
         <Button onClick={onBack} variant="outlined" color="inherit">
           Back
         </Button>
-        <Button onClick={onNext} variant="contained" color="primary">
+        <Button
+          onClick={() => {
+            logFormData();
+            onNext();
+          }}
+          variant="contained"
+          color="primary"
+        >
           Next
         </Button>
       </Box>
@@ -73,19 +103,8 @@ const Step3 = ({ formData, onChange, onNext, onBack, handleAddMore }) => {
 };
 
 Step3.propTypes = {
-  formData: PropTypes.shape({
-    nutritionLevels: PropTypes.arrayOf(
-      PropTypes.shape({
-        serving_item_name: PropTypes.string,
-        amount_gm: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-      })
-    ),
-    calories: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  }).isRequired,
-  onChange: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   onBack: PropTypes.func.isRequired,
-  handleAddMore: PropTypes.func.isRequired,
 };
 
 export default Step3;

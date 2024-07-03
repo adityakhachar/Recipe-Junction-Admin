@@ -1,5 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -7,9 +7,74 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handleDeleteInstruction }) => {
+  const [instructions, setInstructions] = useState([]);
+  const [notes, setNotes] = useState([]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     onChange({ [name]: value });
+  };
+
+  const handleAddInstructionClick = () => {
+    // Prepare new instruction object
+    const newInstruction = {
+      text: formData.instructionText,
+      image: formData.instructionImage || null, // Optional image field
+    };
+
+    // Update instructions state with newInstruction if needed
+    setInstructions([...instructions, newInstruction]);
+
+    // Update notes state with new note if needed
+    if (formData.instructionNotes) {
+      setNotes([...notes, formData.instructionNotes]);
+    } else {
+      setNotes([...notes, null]); // Handle optional notes
+    }
+
+    // Update formData state to clear fields if needed
+    onChange({
+      instructionText: '',
+      instructionImage: '',
+      instructionNotes: '',
+      instructions: [...instructions, newInstruction], // Update parent component state with new instruction
+    });
+
+    // Prepare consolidated data for logging (database format)
+    const consolidatedData = {
+      instructions: [...instructions, newInstruction],
+      notes: [...notes, formData.instructionNotes || null], // Append new note with existing notes array
+    };
+
+    // Log consolidated data to console in database format
+    console.log('Consolidated Data for Database:', consolidatedData);
+  };
+
+  const handleKeyDown = (e, field) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      switch (field) {
+        case 'instructionText':
+        case 'instructionImage':
+        case 'instructionNotes':
+          handleAddInstructionClick();
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
+  const handleDelete = (index) => {
+    const updatedInstructions = [...instructions];
+    updatedInstructions.splice(index, 1);
+    setInstructions(updatedInstructions);
+
+    const updatedNotes = [...notes];
+    updatedNotes.splice(index, 1);
+    setNotes(updatedNotes);
+
+    onChange({ instructions: updatedInstructions });
   };
 
   return (
@@ -20,6 +85,7 @@ const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handl
         label="Instruction Text"
         value={formData.instructionText}
         onChange={handleChange}
+        onKeyDown={(e) => handleKeyDown(e, 'instructionText')}
         fullWidth
         margin="normal"
         multiline
@@ -31,26 +97,28 @@ const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handl
         label="Instruction Image URL (Optional)"
         value={formData.instructionImage}
         onChange={handleChange}
+        onKeyDown={(e) => handleKeyDown(e, 'instructionImage')}
         fullWidth
         margin="normal"
       />
-      <Button
-        onClick={handleAddInstruction}
-        variant="contained"
-        color="primary"
-        sx={{ mt: 2 }}
-      >
-        Add Instruction
-      </Button>
       <TextField
         name="instructionNotes"
         label="Notes (Optional)"
         value={formData.instructionNotes}
         onChange={handleChange}
+        onKeyDown={(e) => handleKeyDown(e, 'instructionNotes')}
         fullWidth
         margin="normal"
       />
-      {formData.instructions.map((instruction, index) => (
+      <Button
+        onClick={handleAddInstructionClick}
+        variant="outlined"
+        color="primary"
+        sx={{ mt: 2 }}
+      >
+        Add Instruction
+      </Button>
+      {instructions.map((instruction, index) => (
         <Box key={index} sx={{ mt: 2 }}>
           <Typography variant="body1">{instruction.text}</Typography>
           {instruction.image && (
@@ -62,13 +130,13 @@ const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handl
               />
             </Box>
           )}
-          {instruction.notes && (
+          {notes[index] && (
             <Typography variant="body2" color="textSecondary">
-              Notes: {instruction.notes}
+              Notes: {notes[index]}
             </Typography>
           )}
           <Button
-            onClick={() => handleDeleteInstruction(index)}
+            onClick={() => handleDelete(index)}
             variant="outlined"
             color="error"
             sx={{ mt: 1 }}

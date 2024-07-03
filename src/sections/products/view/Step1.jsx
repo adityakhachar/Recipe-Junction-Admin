@@ -12,6 +12,22 @@ const Step1 = ({ formData, onChange, onNext }) => {
     onChange({ [name]: value });
   };
 
+  const logFormData = () => {
+    // Prepare data in the format expected by the recipeSchema
+    const recipeData = {
+      name: formData.name,
+      description: formData.description,
+      youtube_link: formData.youtube_link || '', // Optional field
+      cook_time: parseInt(formData.cook_time, 10),
+      prep_time: parseInt(formData.prep_time, 10),
+      serving_persons: parseInt(formData.serving_persons, 10),
+      difficulty: formData.difficulty
+    };
+
+    // Log the data in the desired schema format
+    console.log('Form Data for Recipe:', recipeData);
+  };
+
   return (
     <>
       <Typography variant="h6">Step 1: Recipe Details</Typography>
@@ -84,11 +100,26 @@ const Step1 = ({ formData, onChange, onNext }) => {
         <option value="medium">Medium</option>
         <option value="hard">Hard</option>
       </TextField>
+      <TextField
+        name="youtube_link"
+        label="YouTube Video Link"
+        value={formData.youtube_link}
+        onChange={handleChange}
+        fullWidth
+        margin="normal"
+      />
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
         <Button disabled onClick={() => {}} variant="outlined" color="inherit">
           Back
         </Button>
-        <Button onClick={onNext} variant="contained" color="primary">
+        <Button
+          onClick={() => {
+            logFormData();
+            onNext();
+          }}
+          variant="contained"
+          color="primary"
+        >
           Next
         </Button>
       </Box>
@@ -104,6 +135,7 @@ Step1.propTypes = {
     prep_time: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     serving_persons: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     difficulty: PropTypes.string,
+    youtube_link: PropTypes.string,
   }).isRequired,
   onChange: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,

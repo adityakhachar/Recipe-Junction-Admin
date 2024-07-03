@@ -22,7 +22,7 @@ const steps = [
 ];
 
 const ProductsView = () => {
-  const [activeStep, setActiveStep] = useState(1); // Initial activeStep set to 0 (Step 1)
+  const [activeStep, setActiveStep] = useState(3); // Initial activeStep set to 0 (Step 1)
 
   const [formData, setFormData] = useState({
     name: '',
@@ -122,6 +122,7 @@ const ProductsView = () => {
         onChange: handleFormChange,
         onNext: handleNext,
         onBack: handleBack,
+        onReset: handleReset,
         onSubmit: handleSubmit,
         cuisineOptions: ['Italian', 'Chinese', 'Indian', 'Custom'], // example options
         handleCustomCuisineChange,

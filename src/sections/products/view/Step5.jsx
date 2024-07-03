@@ -1,63 +1,103 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 
 import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-const Step5 = ({ formData, onBack, onSubmit }) => (
-  <>
-    <Typography variant="h6">Step 5: Review and Submit</Typography>
-    <Typography variant="body1">
-      Please review the information before submitting:
-    </Typography>
-    <Typography variant="body1">
-      Name: {formData.name}
-    </Typography>
-    <Typography variant="body1">
-      Description: {formData.description}
-    </Typography>
-    <Typography variant="body1">
-      Cook Time: {formData.cook_time} minutes
-    </Typography>
-    <Typography variant="body1">
-      Prep Time: {formData.prep_time} minutes
-    </Typography>
-    <Typography variant="body1">
-      Serving Persons: {formData.serving_persons}
-    </Typography>
-    <Typography variant="body1">
-      Difficulty: {formData.difficulty}
-    </Typography>
-    <Typography variant="body1">
-      Cuisine Type: {formData.cuisine_type.join(', ')}
-    </Typography>
-    {/* Display other form data fields as needed */}
+const Step5 = ({ formData, onChange, onSubmit, onReset, onBack }) => {
+  const [ingredientName, setIngredientName] = useState('');
 
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-      <Button onClick={onBack} variant="outlined" color="inherit">
-        Back
-      </Button>
-      <Button onClick={onSubmit} variant="contained" color="primary">
-        Submit
-      </Button>
-    </Box>
-  </>
-);
+  const handleAddIngredient = () => {
+    if (ingredientName && !formData.ingredients.includes(ingredientName)) {
+      const updatedIngredients = [...formData.ingredients, ingredientName];
+      onChange({ ingredients: updatedIngredients });
+      setIngredientName(''); // Clear ingredientName state after adding
+    }
+  };
+
+  const handleDeleteIngredient = (ingredient) => {
+    const updatedIngredients = formData.ingredients.filter(item => item !== ingredient);
+    onChange({ ingredients: updatedIngredients });
+  };
+
+  return (
+    <>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
+          Step 5: Add Ingredients
+        </Typography>
+        <Typography variant="subtitle1" color="textSecondary">
+          Please provide the ingredients.
+        </Typography>
+      </Box>
+
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+        <TextField
+          name="ingredient_name"
+          label="Ingredient Name"
+          value={ingredientName}
+          onChange={(e) => setIngredientName(e.target.value)}
+          fullWidth
+          margin="normal"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleAddIngredient();
+            }
+          }}
+        />
+        <Button
+          onClick={handleAddIngredient}
+          variant="outlined"
+          color="primary"
+          sx={{ height: '100%' }}
+        >
+          Add
+        </Button>
+      </Box>
+
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
+        {formData.ingredients.map((ingredient) => (
+          <Chip
+            key={ingredient}
+            label={ingredient}
+            onDelete={() => handleDeleteIngredient(ingredient)}
+            deleteIcon={<span style={{ cursor: 'pointer', padding: 2 }}>×</span>}
+            sx={{ mr: 1, mb: 1 }}
+          />
+        ))}
+      </Box>
+
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+        <Button onClick={onBack} variant="outlined" color="inherit">
+          Back
+        </Button>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button onClick={onReset} variant="outlined" color="secondary">
+            Reset
+          </Button>
+          <Button onClick={onSubmit} variant="contained" color="primary">
+            Submit
+          </Button>
+        </Box>
+      </Box>
+    </>
+  );
+};
 
 Step5.propTypes = {
   formData: PropTypes.shape({
-    name: PropTypes.string,
-    description: PropTypes.string,
-    cook_time: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    prep_time: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    serving_persons: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    difficulty: PropTypes.string,
-    cuisine_type: PropTypes.arrayOf(PropTypes.string),
-    // Add PropTypes for other fields if necessary
+    ingredients: PropTypes.arrayOf(
+      PropTypes.string.isRequired
+    ).isRequired,
   }).isRequired,
-  onBack: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  onReset: PropTypes.func.isRequired,
+  onBack: PropTypes.func.isRequired,
 };
 
 export default Step5;

@@ -22,7 +22,7 @@ const steps = [
 ];
 
 const ProductsView = () => {
-  const [activeStep, setActiveStep] = useState(3); // Initial activeStep set to 0 (Step 1)
+  const [activeStep, setActiveStep] = useState(0); // Initial activeStep set to 0 (Step 1)
 
   const [formData, setFormData] = useState({
     name: '',

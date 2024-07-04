@@ -77,6 +77,21 @@ const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handl
     onChange({ instructions: updatedInstructions });
   };
 
+  const handleNextClick = () => {
+    // Prepare data for storage in localStorage
+    const step4Data = {
+      instructions,
+      notes,
+    };
+
+    // Store in localStorage
+    localStorage.setItem('step4Data', JSON.stringify(step4Data));
+    console.log('Step 4 Data:', step4Data);
+
+    // Call onNext function to proceed to the next step
+    onNext();
+  };
+
   return (
     <>
       <Typography variant="h6">Step 4: Add Instructions</Typography>
@@ -150,7 +165,7 @@ const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handl
         <Button onClick={onBack} variant="outlined" color="inherit">
           Back
         </Button>
-        <Button onClick={onNext} variant="contained" color="primary">
+        <Button onClick={handleNextClick} variant="contained" color="primary">
           Next
         </Button>
       </Box>

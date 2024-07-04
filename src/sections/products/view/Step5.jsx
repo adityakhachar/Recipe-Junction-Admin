@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
@@ -9,6 +9,22 @@ import Typography from '@mui/material/Typography';
 
 const Step5 = ({ formData, onChange, onSubmit, onReset, onBack }) => {
   const [ingredientName, setIngredientName] = useState('');
+
+  useEffect(() => {
+    // Load data from local storage
+    const step1Data = JSON.parse(localStorage.getItem('step1Data')) || {};
+    const step2Data = JSON.parse(localStorage.getItem('step2Data')) || {};
+    const step3Data = JSON.parse(localStorage.getItem('step3Data')) || {};
+    const step4Data = JSON.parse(localStorage.getItem('step4Data')) || {};
+
+    // Log the loaded data
+    console.log('Loaded Step 1 Data:', step1Data);
+    console.log('Loaded Step 2 Data:', step2Data);
+    console.log('Loaded Step 3 Data:', step3Data);
+    console.log('Loaded Step 4 Data:', step4Data);
+
+    // Optionally, you can use the loaded data to pre-fill formData or perform other actions
+  }, []);
 
   const handleAddIngredient = () => {
     if (ingredientName && !formData.ingredients.includes(ingredientName)) {
@@ -21,6 +37,20 @@ const Step5 = ({ formData, onChange, onSubmit, onReset, onBack }) => {
   const handleDeleteIngredient = (ingredient) => {
     const updatedIngredients = formData.ingredients.filter(item => item !== ingredient);
     onChange({ ingredients: updatedIngredients });
+  };
+
+  const handleSubmitClick = () => {
+    // Prepare data for storage in localStorage
+    const step5Data = {
+      ingredients: formData.ingredients,
+    };
+
+    // Store in localStorage
+    localStorage.setItem('step5Data', JSON.stringify(step5Data));
+    console.log('Step 5 Data:', step5Data);
+
+    // Call onSubmit function to submit the form
+    onSubmit();
   };
 
   return (
@@ -79,7 +109,7 @@ const Step5 = ({ formData, onChange, onSubmit, onReset, onBack }) => {
           <Button onClick={onReset} variant="outlined" color="secondary">
             Reset
           </Button>
-          <Button onClick={onSubmit} variant="contained" color="primary">
+          <Button onClick={handleSubmitClick} variant="contained" color="primary">
             Submit
           </Button>
         </Box>

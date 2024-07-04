@@ -101,8 +101,13 @@ const Step2 = ({
       meal_type: formData.meal_type,
     };
 
-    // Log the data in the desired schema format
+    // Store in localStorage
+    localStorage.setItem('step2Data', JSON.stringify(categoryData));
     console.log('Form Data for Category:', categoryData);
+    console.log(' step2Data Stored in localStorage:', localStorage.getItem('step2Data'));
+
+    // Call onNext function to proceed to the next step
+    onNext();
   };
 
   return (
@@ -131,11 +136,11 @@ const Step2 = ({
             </MenuItem>
           ))}
         </Select>
-          {!showCustomCuisineInput && (
-            <Button onClick={handleAddCustomCuisineClick} variant="outlined" color="primary" sx={{ mt: 1, maxWidth: '15%', minWidth: 'auto', whiteSpace: 'nowrap' }}>
-              Add Custom Cuisine
-            </Button>
-          )}
+        {!showCustomCuisineInput && (
+          <Button onClick={handleAddCustomCuisineClick} variant="outlined" color="primary" sx={{ mt: 1, maxWidth: '15%', minWidth: 'auto', whiteSpace: 'nowrap' }}>
+            Add Custom Cuisine
+          </Button>
+        )}
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
           {formData.cuisine_type.map((value) => (
             <Chip
@@ -199,11 +204,11 @@ const Step2 = ({
             </MenuItem>
           ))}
         </Select>
-          {!showCustomDietaryInput && (
-            <Button onClick={handleAddCustomDietaryClick} variant="outlined" color="primary" sx={{ mt: 1, maxWidth: '15%', minWidth: 'auto', whiteSpace: 'nowrap' }}>
-              Add Custom Dietary
-            </Button>
-          )}
+        {!showCustomDietaryInput && (
+          <Button onClick={handleAddCustomDietaryClick} variant="outlined" color="primary" sx={{ mt: 1, maxWidth: '15%', minWidth: 'auto', whiteSpace: 'nowrap' }}>
+            Add Custom Dietary
+          </Button>
+        )}
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
           {formData.dietary.map((value) => (
             <Chip
@@ -254,12 +259,12 @@ const Step2 = ({
           value={formData.meal_type}
           onChange={handleChange}
           renderValue={(selected) => (
-    <div style={{ display: 'none' }}>
-      {selected.map((value) => (
-        <Chip key={value} label={value} onDelete={() => handleDeleteCustomMealType(value)} sx={{ mr: 1, mb: 1 }} />
-      ))}
-    </div>
-  )}
+            <div style={{ display: 'none' }}>
+              {selected.map((value) => (
+                <Chip key={value} label={value} onDelete={() => handleDeleteCustomMealType(value)} sx={{ mr: 1, mb: 1 }} />
+              ))}
+            </div>
+          )}
         >
           {mealTypeOptions.map((mealType) => (
             <MenuItem key={mealType} value={mealType}>
@@ -268,7 +273,7 @@ const Step2 = ({
           ))}
         </Select>
         {!showCustomMealTypeInput && (
-          <Button onClick={handleAddCustomMealTypeClick} variant="outlined" color="primary"  sx={{ mt: 1, maxWidth: '15%', minWidth: 'auto', whiteSpace: 'nowrap' }}>
+          <Button onClick={handleAddCustomMealTypeClick} variant="outlined" color="primary" sx={{ mt: 1, maxWidth: '15%', minWidth: 'auto', whiteSpace: 'nowrap' }}>
             Add Custom Meal Type
           </Button>
         )}
@@ -283,7 +288,6 @@ const Step2 = ({
             />
           ))}
         </Box>
-        
       </FormControl>
 
       {/* Add Custom Meal Type Input */}
@@ -319,7 +323,7 @@ const Step2 = ({
         <Button onClick={onBack} variant="outlined" color="inherit">
           Back
         </Button>
-        <Button onClick={() => { onNext(); logFormData(); }} variant="contained" color="primary" type="button">
+        <Button onClick={logFormData} variant="contained" color="primary" type="button">
           Next
         </Button>
       </Box>

@@ -15,10 +15,10 @@ import Step5 from './Step5';
 
 const steps = [
   { component: Step1, name: 'Recipe Details' },
-  { component: Step2, name: 'Ingredients' },
+  { component: Step2, name: 'Categories' },
   { component: Step3, name: 'Nutrition Information' },
   { component: Step4, name: 'Instructions' },
-  { component: Step5, name: 'Review & Submit' },
+  { component: Step5, name: 'Ingredients' },
 ];
 
 const ProductsView = () => {

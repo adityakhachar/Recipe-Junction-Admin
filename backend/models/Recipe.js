@@ -14,7 +14,7 @@ const recipeSchema = new Schema({
     }],
     description: {
         type: String,
-        required: true,
+        // required: true,
         minlength: 200
     },
     youtube_link: {
@@ -23,20 +23,20 @@ const recipeSchema = new Schema({
     },
     cook_time: {
         type: Number,
-        required: true
+        // required: true
     },
     prep_time: {
         type: Number,
-        required: true
+        // required: true
     },
     serving_persons: {
         type: Number,
-        required: true
+        // required: true
     },
     difficulty: {
         type: String,
         enum: ['easy', 'medium', 'hard'],
-        required: true
+        // required: true
     },
     categories: [{
         type: Schema.Types.ObjectId,

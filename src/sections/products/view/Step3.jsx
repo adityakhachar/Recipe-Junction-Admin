@@ -33,6 +33,8 @@ const Step3 = ({ onNext, onBack }) => {
       calories: parseInt(formData.calories, 10),
     };
 
+    localStorage.setItem('step3Data', JSON.stringify(nutritionData));
+    console.log(' step3Data Stored in localStorage:', localStorage.getItem('step3Data'));
     // Log the data in the desired schema format
     console.log('Form Data for Nutrition:', nutritionData);
   };

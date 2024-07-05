@@ -37,14 +37,18 @@ const Step2 = ({
     setShowCustomCuisineInput(true);
   };
 
+  const handleRemoveCustomCuisineClick = () => {
+    setShowCustomCuisineInput(false);
+    setCustomCuisine('');
+  };
+
   const handleAddCustomCuisineOption = () => {
-    if (customCuisine && !formData.cuisine_type.includes(customCuisine)) {
-      const updatedCuisineTypes = [...formData.cuisine_type, customCuisine];
+    if (customCuisine) {
+      const newCuisines = customCuisine.split(',').map(cuisine => cuisine.trim());
+      const updatedCuisineTypes = [...formData.cuisine_type, ...newCuisines];
       onChange({ cuisine_type: updatedCuisineTypes });
-      setCustomCuisine(''); // Clear customCuisine state after adding
+      setCustomCuisine('');
       setShowCustomCuisineInput(false);
-    } else {
-      console.log("Custom Cuisine is undefined or already exists in formData.cuisine_type.");
     }
   };
 
@@ -57,14 +61,18 @@ const Step2 = ({
     setShowCustomDietaryInput(true);
   };
 
+  const handleRemoveCustomDietaryClick = () => {
+    setShowCustomDietaryInput(false);
+    setCustomDietary('');
+  };
+
   const handleAddCustomDietaryOption = () => {
-    if (customDietary && !formData.dietary.includes(customDietary)) {
-      const updatedDietaryPreferences = [...formData.dietary, customDietary];
+    if (customDietary) {
+      const newDietaryPreferences = customDietary.split(',').map(diet => diet.trim());
+      const updatedDietaryPreferences = [...formData.dietary, ...newDietaryPreferences];
       onChange({ dietary: updatedDietaryPreferences });
-      setCustomDietary(''); // Clear customDietary state after adding
+      setCustomDietary('');
       setShowCustomDietaryInput(false);
-    } else {
-      console.log("Custom Dietary is undefined or already exists in formData.dietary.");
     }
   };
 
@@ -77,14 +85,18 @@ const Step2 = ({
     setShowCustomMealTypeInput(true);
   };
 
+  const handleRemoveCustomMealTypeClick = () => {
+    setShowCustomMealTypeInput(false);
+    setCustomMealType('');
+  };
+
   const handleAddCustomMealTypeOption = () => {
-    if (customMealType && !formData.meal_type.includes(customMealType)) {
-      const updatedMealTypes = [...formData.meal_type, customMealType];
+    if (customMealType) {
+      const newMealTypes = customMealType.split(',').map(type => type.trim());
+      const updatedMealTypes = [...formData.meal_type, ...newMealTypes];
       onChange({ meal_type: updatedMealTypes });
-      setCustomMealType(''); // Clear customMealType state after adding
+      setCustomMealType('');
       setShowCustomMealTypeInput(false);
-    } else {
-      console.log("Custom Meal Type is undefined or already exists in formData.meal_type.");
     }
   };
 
@@ -117,30 +129,31 @@ const Step2 = ({
       {/* Cuisine Type */}
       <FormControl fullWidth margin="normal" required>
         <InputLabel>Cuisine Type</InputLabel>
-        <Select
-          name="cuisine_type"
-          multiple
-          value={formData.cuisine_type}
-          onChange={handleChange}
-          renderValue={(selected) => (
-            <div style={{ display: 'none' }}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} onDelete={() => handleDeleteCustomCuisine(value)} sx={{ mr: 1, mb: 1 }} />
-              ))}
-            </div>
-          )}
-        >
-          {cuisineOptions.map((cuisine) => (
-            <MenuItem key={cuisine} value={cuisine}>
-              {cuisine}
-            </MenuItem>
-          ))}
-        </Select>
-        {!showCustomCuisineInput && (
-          <Button onClick={handleAddCustomCuisineClick} variant="outlined" color="primary" sx={{ mt: 1, maxWidth: '15%', minWidth: 'auto', whiteSpace: 'nowrap' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Select
+            name="cuisine_type"
+            multiple
+            value={formData.cuisine_type}
+            onChange={handleChange}
+            renderValue={(selected) => (
+              <div style={{ display: 'none' }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} onDelete={() => handleDeleteCustomCuisine(value)} sx={{ mr: 1, mb: 1 }} />
+                ))}
+              </div>
+            )}
+            sx={{ flexGrow: 1 }}
+          >
+            {cuisineOptions.map((cuisine) => (
+              <MenuItem key={cuisine} value={cuisine}>
+                {cuisine}
+              </MenuItem>
+            ))}
+          </Select>
+          <Button onClick={handleAddCustomCuisineClick} variant="outlined" color="primary" sx={{ ml: 1 }}>
             Add Custom Cuisine
           </Button>
-        )}
+        </Box>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
           {formData.cuisine_type.map((value) => (
             <Chip
@@ -179,36 +192,52 @@ const Step2 = ({
           >
             Add
           </Button>
+          <Button
+            onClick={handleRemoveCustomCuisineClick}
+            variant="outlined"
+            sx={{
+              height: '100%',
+              color: 'red',
+              borderColor: 'red',
+              '&:hover': {
+                borderColor: 'darkred',
+                backgroundColor: 'rgba(255, 0, 0, 0.1)', // Light red background on hover
+              },
+            }}
+          >
+            Remove
+          </Button>
         </Box>
       )}
 
       {/* Dietary Preferences */}
       <FormControl fullWidth margin="normal" required>
         <InputLabel>Dietary Preferences</InputLabel>
-        <Select
-          name="dietary"
-          multiple
-          value={formData.dietary}
-          onChange={handleChange}
-          renderValue={(selected) => (
-            <div style={{ display: 'none' }}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} onDelete={() => handleDeleteCustomDietary(value)} sx={{ mr: 1, mb: 1 }} />
-              ))}
-            </div>
-          )}
-        >
-          {dietaryOptions.map((dietary) => (
-            <MenuItem key={dietary} value={dietary}>
-              {dietary}
-            </MenuItem>
-          ))}
-        </Select>
-        {!showCustomDietaryInput && (
-          <Button onClick={handleAddCustomDietaryClick} variant="outlined" color="primary" sx={{ mt: 1, maxWidth: '15%', minWidth: 'auto', whiteSpace: 'nowrap' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Select
+            name="dietary"
+            multiple
+            value={formData.dietary}
+            onChange={handleChange}
+            renderValue={(selected) => (
+              <div style={{ display: 'none' }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} onDelete={() => handleDeleteCustomDietary(value)} sx={{ mr: 1, mb: 1 }} />
+                ))}
+              </div>
+            )}
+            sx={{ flexGrow: 1 }}
+          >
+            {dietaryOptions.map((dietary) => (
+              <MenuItem key={dietary} value={dietary}>
+                {dietary}
+              </MenuItem>
+            ))}
+          </Select>
+          <Button onClick={handleAddCustomDietaryClick} variant="outlined" color="primary" sx={{ ml: 1 }}>
             Add Custom Dietary
           </Button>
-        )}
+        </Box>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
           {formData.dietary.map((value) => (
             <Chip
@@ -247,36 +276,53 @@ const Step2 = ({
           >
             Add
           </Button>
+          <Button
+            onClick={handleRemoveCustomDietaryClick}
+            variant="outlined"
+            color="secondary"
+            sx={{
+              height: '100%',
+              color: 'red',
+              borderColor: 'red',
+              '&:hover': {
+                borderColor: 'darkred',
+                backgroundColor: 'rgba(255, 0, 0, 0.1)', // Light red background on hover
+              },
+            }}
+          >
+            Remove
+          </Button>
         </Box>
       )}
 
       {/* Meal Type */}
       <FormControl fullWidth margin="normal" required>
         <InputLabel>Meal Type</InputLabel>
-        <Select
-          name="meal_type"
-          multiple
-          value={formData.meal_type}
-          onChange={handleChange}
-          renderValue={(selected) => (
-            <div style={{ display: 'none' }}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} onDelete={() => handleDeleteCustomMealType(value)} sx={{ mr: 1, mb: 1 }} />
-              ))}
-            </div>
-          )}
-        >
-          {mealTypeOptions.map((mealType) => (
-            <MenuItem key={mealType} value={mealType}>
-              {mealType}
-            </MenuItem>
-          ))}
-        </Select>
-        {!showCustomMealTypeInput && (
-          <Button onClick={handleAddCustomMealTypeClick} variant="outlined" color="primary" sx={{ mt: 1, maxWidth: '15%', minWidth: 'auto', whiteSpace: 'nowrap' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Select
+            name="meal_type"
+            multiple
+            value={formData.meal_type}
+            onChange={handleChange}
+            renderValue={(selected) => (
+              <div style={{ display: 'none' }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} onDelete={() => handleDeleteCustomMealType(value)} sx={{ mr: 1, mb: 1 }} />
+                ))}
+              </div>
+            )}
+            sx={{ flexGrow: 1 }}
+          >
+            {mealTypeOptions.map((mealType) => (
+              <MenuItem key={mealType} value={mealType}>
+                {mealType}
+              </MenuItem>
+            ))}
+          </Select>
+          <Button onClick={handleAddCustomMealTypeClick} variant="outlined" color="primary" sx={{ ml: 1 }}>
             Add Custom Meal Type
           </Button>
-        )}
+        </Box>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
           {formData.meal_type.map((value) => (
             <Chip
@@ -314,6 +360,22 @@ const Step2 = ({
             sx={{ height: '100%' }}
           >
             Add
+          </Button>
+          <Button
+            onClick={handleRemoveCustomMealTypeClick}
+            variant="outlined"
+            color="secondary"
+            sx={{
+              height: '100%',
+              color: 'red',
+              borderColor: 'red',
+              '&:hover': {
+                borderColor: 'darkred',
+                backgroundColor: 'rgba(255, 0, 0, 0.1)', // Light red background on hover
+              },
+            }}
+          >
+            Remove
           </Button>
         </Box>
       )}

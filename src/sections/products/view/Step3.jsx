@@ -43,7 +43,7 @@ const Step3 = ({ onNext, onBack }) => {
     <>
       <Typography variant="h6">Step 3: Add Nutrition Level</Typography>
       {formData.nutritionLevels.map((item, index) => (
-        <div key={index}>
+        <Box key={index} sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <TextField
             name="serving_item_name"
             label="Serving Item Name"
@@ -52,6 +52,7 @@ const Step3 = ({ onNext, onBack }) => {
             fullWidth
             margin="normal"
             required
+            sx={{ flex: '1 1 auto' }}
           />
           <TextField
             name="amount_gm"
@@ -62,17 +63,22 @@ const Step3 = ({ onNext, onBack }) => {
             fullWidth
             margin="normal"
             required
+            sx={{ flex: '1 1 auto' }}
           />
           {index === formData.nutritionLevels.length - 1 && (
             <Button
               onClick={() => handleAddMore('nutritionLevels')}
               variant="outlined"
               color="primary"
+              sx={{
+                flex: '0 0 auto',
+                ml: 2, // Adjust margin as needed
+              }}
             >
               Add More
             </Button>
           )}
-        </div>
+        </Box>
       ))}
       <TextField
         name="calories"

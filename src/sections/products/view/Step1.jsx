@@ -20,17 +20,34 @@ const Step1 = ({ formData, onChange, onNext }) => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreviews([...imagePreviews, reader.result]);
+        const imageUrl = `/images/temp/${file.name}`; // Temporary URL
+        setImagePreviews([...imagePreviews, imageUrl]); // Add to image previews
+        // Upload the file to the server
+        fetch(reader.result)
+          .then(response => response.blob())
+          .then(blob => {
+            const formDataUpload = new FormData();
+            formDataUpload.append('file', blob, file.name);
+            return fetch(`/images/temp/${file.name}`, {
+              method: 'POST',
+              body: formDataUpload
+            });
+          })
+          .then(() => {
+            onChange({ ...formData, images: [...(formData.images || []), imageUrl] }); // Store image URL in formData
+          })
+          .catch(error => {
+            console.error('Error uploading image:', error);
+          });
       };
       reader.readAsDataURL(file);
-      onChange({ ...formData, images: [...(formData.images || []), { file, url: reader.result }] }); // Store both file and URL
     }
   };
 
   const handleImageUrlChange = (e) => {
     const imageUrl = e.target.value;
     setImagePreviews([...imagePreviews, imageUrl]); // Add to image previews
-    onChange({ ...formData, images: [...(formData.images || []), { url: imageUrl }] }); // Store only URL
+    onChange({ ...formData, images: [...(formData.images || []), imageUrl] }); // Store URL string directly
   };
 
   const clearImagePreview = () => {
@@ -51,6 +68,7 @@ const Step1 = ({ formData, onChange, onNext }) => {
       imageUrl: formData.imageUrl,
     };
 
+    // Store formData in localStorage
     localStorage.setItem('step1Data', JSON.stringify(step1Data));
     console.log('Form Data for Recipe Step 1:', step1Data);
     console.log('Stored in localStorage:', localStorage.getItem('step1Data'));
@@ -141,9 +159,9 @@ const Step1 = ({ formData, onChange, onNext }) => {
         }}
       >
         <option value="" />
-        <option value="easy">Easy</option>
-        <option value="medium">Medium</option>
-        <option value="hard">Hard</option>
+        <option value="easy">easy</option>
+        <option value="medium">medium</option>
+        <option value="hard">hard</option>
       </TextField>
       <TextField
         name="youtube_link"
@@ -153,7 +171,7 @@ const Step1 = ({ formData, onChange, onNext }) => {
         fullWidth
         margin="normal"
       />
-      {/* Choose Local or URL */}
+
       <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
         <Button
           variant={uploadType === 'local' ? 'contained' : 'outlined'}
@@ -171,7 +189,7 @@ const Step1 = ({ formData, onChange, onNext }) => {
           Add Image URL
         </Button>
       </Box>
-      {/* Conditional Rendering based on uploadType */}
+
       {uploadType === 'local' && (
         <Button
           variant="outlined"
@@ -200,12 +218,12 @@ const Step1 = ({ formData, onChange, onNext }) => {
           margin="normal"
         />
       )}
-      {/* Image Previews */}
+
       {imagePreviews.length > 0 && (
         <Box mt={2}>
           {imagePreviews.map((preview, index) => (
             <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
-              <img src={preview.url || preview} alt={`Preview ${index}`} style={{ maxWidth: '100px', maxHeight: '100px', marginRight: '1rem' }} />
+              <img src={preview} alt={`Preview ${index}`} style={{ maxWidth: '100px', maxHeight: '100px', marginRight: '1rem' }} />
               <Button onClick={() => handleRemoveImage(index)} variant="outlined" color="inherit">
                 Remove
               </Button>
@@ -216,7 +234,7 @@ const Step1 = ({ formData, onChange, onNext }) => {
           </Button>
         </Box>
       )}
-      {/* Navigation Buttons */}
+
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
         <Button variant="outlined" color="inherit">
           Back
@@ -243,12 +261,7 @@ Step1.propTypes = {
     serving_persons: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     difficulty: PropTypes.string,
     youtube_link: PropTypes.string,
-    images: PropTypes.arrayOf(
-      PropTypes.shape({
-        file: PropTypes.instanceOf(File), // For local file
-        url: PropTypes.string, // For image URL
-      })
-    ),
+    images: PropTypes.arrayOf(PropTypes.string), // Array of image URLs
     imageUrl: PropTypes.string, // Single image URL for backward compatibility
   }).isRequired,
   onChange: PropTypes.func.isRequired,

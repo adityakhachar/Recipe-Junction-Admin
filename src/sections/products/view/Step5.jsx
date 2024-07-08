@@ -83,7 +83,7 @@ const Step5 = ({ formData, onChange, onSubmit, onReset, onBack }) => {
           onClick={handleAddIngredient}
           variant="outlined"
           color="primary"
-          sx={{ height: '100%' }}
+          sx={{ height: '100%', minWidth: 'auto' }} // Adjusted height and minWidth
         >
           Add
         </Button>

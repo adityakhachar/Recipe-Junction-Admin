@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 
 const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handleDeleteInstruction }) => {
   const [instructions, setInstructions] = useState([]);
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,11 +25,9 @@ const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handl
     // Update instructions state with newInstruction if needed
     setInstructions([...instructions, newInstruction]);
 
-    // Update notes state with new note if needed
+    // Update notes state if notes are provided
     if (formData.instructionNotes) {
-      setNotes([...notes, formData.instructionNotes]);
-    } else {
-      setNotes([...notes, null]); // Handle optional notes
+      setNotes(formData.instructionNotes);
     }
 
     // Update formData state to clear fields if needed
@@ -43,7 +41,7 @@ const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handl
     // Prepare consolidated data for logging (database format)
     const consolidatedData = {
       instructions: [...instructions, newInstruction],
-      notes: [...notes, formData.instructionNotes || null], // Append new note with existing notes array
+      notes: formData.instructionNotes || '', // Update notes state with new note if needed
     };
 
     // Log consolidated data to console in database format
@@ -70,10 +68,6 @@ const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handl
     updatedInstructions.splice(index, 1);
     setInstructions(updatedInstructions);
 
-    const updatedNotes = [...notes];
-    updatedNotes.splice(index, 1);
-    setNotes(updatedNotes);
-
     onChange({ instructions: updatedInstructions });
   };
 
@@ -95,27 +89,37 @@ const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handl
   return (
     <>
       <Typography variant="h6">Step 4: Add Instructions</Typography>
-      <TextField
-        name="instructionText"
-        label="Instruction Text"
-        value={formData.instructionText}
-        onChange={handleChange}
-        onKeyDown={(e) => handleKeyDown(e, 'instructionText')}
-        fullWidth
-        margin="normal"
-        multiline
-        rows={3}
-        required
-      />
-      <TextField
-        name="instructionImage"
-        label="Instruction Image URL (Optional)"
-        value={formData.instructionImage}
-        onChange={handleChange}
-        onKeyDown={(e) => handleKeyDown(e, 'instructionImage')}
-        fullWidth
-        margin="normal"
-      />
+      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+        <TextField
+          name="instructionText"
+          label="Instruction Text"
+          value={formData.instructionText}
+          onChange={handleChange}
+          onKeyDown={(e) => handleKeyDown(e, 'instructionText')}
+          fullWidth
+          margin="normal"
+          multiline
+          rows={1} // Adjusted rows to 2
+          required
+        />
+        <TextField
+          name="instructionImage"
+          label="Instruction Image URL (Optional)"
+          value={formData.instructionImage}
+          onChange={handleChange}
+          onKeyDown={(e) => handleKeyDown(e, 'instructionImage')}
+          fullWidth
+          margin="normal"
+        />
+        <Button
+          onClick={handleAddInstructionClick}
+          variant="outlined"
+          color="primary"
+          sx={{ mt: 2, minWidth: 'auto' }}
+        >
+          Add Instruction
+        </Button>
+      </Box>
       <TextField
         name="instructionNotes"
         label="Notes (Optional)"
@@ -125,14 +129,7 @@ const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handl
         fullWidth
         margin="normal"
       />
-      <Button
-        onClick={handleAddInstructionClick}
-        variant="outlined"
-        color="primary"
-        sx={{ mt: 2 }}
-      >
-        Add Instruction
-      </Button>
+
       {instructions.map((instruction, index) => (
         <Box key={index} sx={{ mt: 2 }}>
           <Typography variant="body1">{instruction.text}</Typography>
@@ -145,9 +142,9 @@ const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handl
               />
             </Box>
           )}
-          {notes[index] && (
+          {notes && (
             <Typography variant="body2" color="textSecondary">
-              Notes: {notes[index]}
+              Notes: {notes}
             </Typography>
           )}
           <Button

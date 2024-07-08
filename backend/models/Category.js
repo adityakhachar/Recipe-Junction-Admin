@@ -11,17 +11,17 @@ const categorySchema = new Schema({
     },
     cuisine_type: [{
         type: String,
-        enum: ['Italian', 'Indian', 'Chinese', 'Japanese', 'Mexican', 'French', 'Mediterranean', 'Custom'],
+        // enum: ['Italian', 'Indian', 'Chinese', 'Japanese', 'Mexican', 'French', 'Mediterranean', 'Custom'],
         required: true
     }],
     dietary: [{
         type: String,
-        enum: ['Vegan', 'Vegetarian', 'Pescatarian', 'Gluten-free', 'Lactose-free', 'Sugar-free', 'Non-vegetarian', 'Custom'],
+        // enum: ['Vegan', 'Vegetarian', 'Pescatarian', 'Gluten-free', 'Lactose-free', 'Sugar-free', 'Non-vegetarian', 'Custom'],
         required: true
     }],
     meal_type: [{
         type: String,
-        enum: ['Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Snack', 'Dessert', 'Custom'],
+        // enum: ['Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Snack', 'Dessert', 'Custom'],
         required: true
     }]
 });

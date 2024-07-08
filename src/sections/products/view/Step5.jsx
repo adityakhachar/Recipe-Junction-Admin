@@ -11,19 +11,7 @@ const Step5 = ({ formData, onChange, onSubmit, onReset, onBack }) => {
   const [ingredientName, setIngredientName] = useState('');
 
   useEffect(() => {
-    // Load data from local storage
-    const step1Data = JSON.parse(localStorage.getItem('step1Data')) || {};
-    const step2Data = JSON.parse(localStorage.getItem('step2Data')) || {};
-    const step3Data = JSON.parse(localStorage.getItem('step3Data')) || {};
-    const step4Data = JSON.parse(localStorage.getItem('step4Data')) || {};
-
-    // Log the loaded data
-    console.log('Loaded Step 1 Data:', step1Data);
-    console.log('Loaded Step 2 Data:', step2Data);
-    console.log('Loaded Step 3 Data:', step3Data);
-    console.log('Loaded Step 4 Data:', step4Data);
-
-    // Optionally, you can use the loaded data to pre-fill formData or perform other actions
+    // Load data from local storage if needed
   }, []);
 
   const handleAddIngredient = () => {
@@ -39,18 +27,44 @@ const Step5 = ({ formData, onChange, onSubmit, onReset, onBack }) => {
     onChange({ ingredients: updatedIngredients });
   };
 
-  const handleSubmitClick = () => {
-    // Prepare data for storage in localStorage
-    const step5Data = {
-      ingredients: formData.ingredients,
-    };
+  const handleSubmitClick = async (e) => {
+    e.preventDefault(); // Prevent default form submission
 
-    // Store in localStorage
-    localStorage.setItem('step5Data', JSON.stringify(step5Data));
-    console.log('Step 5 Data:', step5Data);
+    try {
+      // Prepare data for API request
+      const recipeData = {
+        step1Data: JSON.parse(localStorage.getItem('step1Data')) || {},
+        step2Data: JSON.parse(localStorage.getItem('step2Data')) || {},
+        step3Data: JSON.parse(localStorage.getItem('step3Data')) || {},
+        step4Data: JSON.parse(localStorage.getItem('step4Data')) || {},
+        step5Data: { ingredients: formData.ingredients }
+      };
+      console.log(recipeData.JS);
 
-    // Call onSubmit function to submit the form
-    onSubmit();
+      // Make API request to insert recipe
+      const response = await fetch('http://localhost:5000/api/recipes/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(recipeData) // Convert object to JSON string
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save recipe.');
+      }
+
+      // Optionally, reset form state after successful submission
+      onReset();
+      onSubmit(); // Trigger onSubmit callback if needed
+
+      // Log success message or handle further actions
+      console.log('Recipe saved successfully!');
+      alert("Success!!");
+    } catch (error) {
+      console.error('Failed to save recipe:', error);
+      // Optionally, handle error display or logging
+    }
   };
 
   return (
@@ -109,7 +123,7 @@ const Step5 = ({ formData, onChange, onSubmit, onReset, onBack }) => {
           <Button onClick={onReset} variant="outlined" color="secondary">
             Reset
           </Button>
-          <Button onClick={handleSubmitClick} variant="contained" color="primary">
+          <Button onClick={(e) => handleSubmitClick(e)} variant="contained" color="primary">
             Submit
           </Button>
         </Box>

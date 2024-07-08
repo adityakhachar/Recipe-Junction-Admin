@@ -15,7 +15,7 @@ const recipeSchema = new Schema({
     description: {
         type: String,
         // required: true,
-        minlength: 200
+        // minlength: 
     },
     youtube_link: {
         type: String

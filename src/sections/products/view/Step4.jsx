@@ -6,9 +6,16 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handleDeleteInstruction }) => {
-  const [instructions, setInstructions] = useState([]);
-  const [notes, setNotes] = useState('');
+const Step4 = ({
+  formData,
+  onChange,
+  onNext,
+  onBack,
+  handleAddInstruction,
+  handleDeleteInstruction,
+}) => {
+  const [instructions, setInstructions] = useState(formData.instructions || []);
+  const [notes, setNotes] = useState(formData.instructionNotes || '');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +29,7 @@ const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handl
       image: formData.instructionImage || null, // Optional image field
     };
 
-    // Update instructions state with newInstruction if needed
+    // Update instructions state with newInstruction
     setInstructions([...instructions, newInstruction]);
 
     // Update notes state if notes are provided
@@ -30,7 +37,7 @@ const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handl
       setNotes(formData.instructionNotes);
     }
 
-    // Update formData state to clear fields if needed
+    // Clear form fields after adding instruction
     onChange({
       instructionText: '',
       instructionImage: '',
@@ -80,8 +87,8 @@ const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handl
 
     // Store in localStorage
     localStorage.setItem('step4Data', JSON.stringify(step4Data));
-    console.log('Step 4 Data:', step4Data);
-
+    console.log(step4Data);
+    console.log(step4Data.notes);
     // Call onNext function to proceed to the next step
     onNext();
   };
@@ -99,7 +106,7 @@ const Step4 = ({ formData, onChange, onNext, onBack, handleAddInstruction, handl
           fullWidth
           margin="normal"
           multiline
-          rows={1} // Adjusted rows to 2
+          rows={1} // Adjusted rows to 1 for single line input
           required
         />
         <TextField
@@ -179,7 +186,6 @@ Step4.propTypes = {
       PropTypes.shape({
         text: PropTypes.string,
         image: PropTypes.string,
-        notes: PropTypes.string,
       })
     ),
   }).isRequired,
